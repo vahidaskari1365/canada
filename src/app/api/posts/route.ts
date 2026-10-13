@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
+// Cache the list endpoints (without slug) for 60s.
+const listCache = new Map<string, { data: any; at: number }>();
+const TTL = 60_000;
+
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
@@ -17,7 +21,8 @@ export async function GET(req: NextRequest) {
     if (!post || !post.published) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
-    await db.post.update({ where: { id: post.id }, data: { views: { increment: 1 } } });
+    // increment views (fire and forget)
+    db.post.update({ where: { id: post.id }, data: { views: { increment: 1 } } }).catch(() => {});
     const related = await db.post.findMany({
       where: {
         published: true,
@@ -30,6 +35,13 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ...post, related });
   }
 
+  const cacheKey = `${type || "all"}:${limit}`;
+  const now = Date.now();
+  const hit = listCache.get(cacheKey);
+  if (hit && now - hit.at < TTL) {
+    return NextResponse.json(hit.data);
+  }
+
   const where: any = { published: true };
   if (type) where.type = type;
 
@@ -39,5 +51,6 @@ export async function GET(req: NextRequest) {
     include: { category: true },
   });
   if (limit > 0) posts = posts.slice(0, limit);
+  listCache.set(cacheKey, { data: posts, at: now });
   return NextResponse.json(posts);
 }

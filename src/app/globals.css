@@ -162,6 +162,12 @@
     background-image: radial-gradient(circle at 1px 1px, oklch(0.52 0.22 27 / 0.08) 1px, transparent 0);
     background-size: 24px 24px;
   }
+  /* Skip rendering offscreen sections until they're near the viewport.
+     Huge perf win for long pages with many animated cards. */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 600px;
+  }
 }
 
 /* Marquee animation */
@@ -187,6 +193,8 @@
 .hero-kenburns {
   animation: hero-kenburns 22s ease-in-out infinite;
   will-change: transform;
+  contain: strict;
+  content-visibility: auto;
 }
 
 /* Diagonal light sweep across the image (cinematic lens flare feel) */

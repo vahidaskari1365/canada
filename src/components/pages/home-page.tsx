@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import {
   motion,
-  useReducedMotion,
   type Variants,
 } from "framer-motion";
 import {
@@ -143,7 +142,6 @@ const process = [
 export function HomePage() {
   const { t, locale, dir } = useLocale();
   const { navigate } = useRouter();
-  const reduce = useReducedMotion();
   const Arrow = dir === "rtl" ? ArrowLeft : ArrowRight;
 
   const [services, setServices] = useState<Service[]>([]);
@@ -151,18 +149,44 @@ export function HomePage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => {
-    fetch("/api/services")
-      .then((r) => r.json())
-      .then((d) => setServices(Array.isArray(d) ? d : []))
-      .catch(() => {});
-    fetch("/api/posts?limit=3")
-      .then((r) => r.json())
-      .then((d) => setPosts(Array.isArray(d) ? d : []))
-      .catch(() => {});
-    fetch("/api/public")
-      .then((r) => r.json())
-      .then((d) => setTestimonials(Array.isArray(d?.testimonials) ? d.testimonials : []))
-      .catch(() => {});
+    let cancelled = false;
+    // Parallel fetch + session storage cache for instant revisits.
+    const cacheKey = "mb_home_v1";
+    try {
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        const c = JSON.parse(cached);
+        if (!cancelled) {
+          setServices(c.services || []);
+          setPosts(c.posts || []);
+          setTestimonials(c.testimonials || []);
+        }
+      }
+    } catch {}
+
+    Promise.all([
+      fetch("/api/services").then((r) => r.json()).catch(() => []),
+      fetch("/api/posts?limit=3").then((r) => r.json()).catch(() => []),
+      fetch("/api/public").then((r) => r.json()).catch(() => ({ testimonials: [] })),
+    ]).then(([s, p, pub]) => {
+      if (cancelled) return;
+      const servicesData = Array.isArray(s) ? s : [];
+      const postsData = Array.isArray(p) ? p : [];
+      const testimonialsData = Array.isArray(pub?.testimonials) ? pub.testimonials : [];
+      setServices(servicesData);
+      setPosts(postsData);
+      setTestimonials(testimonialsData);
+      try {
+        sessionStorage.setItem(
+          cacheKey,
+          JSON.stringify({ services: servicesData, posts: postsData, testimonials: testimonialsData })
+        );
+      } catch {}
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const featuredServices = services.filter((s) => s.featured).slice(0, 4);
@@ -765,16 +789,13 @@ function HeroCard() {
             { k: locale === "fa" ? "تجربه کار" : "Experience", v: "80" },
             { k: locale === "fa" ? "موجود در کانادا" : "In-Canada", v: "35" },
           ].map((row, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, x: dir === "rtl" ? 20 : -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 + i * 0.1 }}
               className="flex items-center justify-between text-sm"
             >
               <span className="text-muted-foreground">{row.k}</span>
               <span className="font-mono tabular-nums">{row.v}</span>
-            </motion.div>
+            </div>
           ))}
         </div>
 

@@ -4,11 +4,11 @@ import { useMemo } from "react";
 
 /**
  * CinematicHeroImage — the canada.webp artwork rendered with layered
- * motion-graphic effects.
+ * motion-graphic effects (performance-tuned).
  *
- *  - Ken-Burns slow push-in (the image breathes)
- *  - Animated diagonal light sheen (lens flare sweeping across)
- *  - Floating dust particles (cinematic atmosphere)
+ *  - Ken-Burns slow push-in (GPU-only transform)
+ *  - Animated diagonal light sheen (single transform)
+ *  - Floating dust particles (limited count, GPU transform)
  *  - Breathing vignette around the edges
  *  - Gradient scrims for text legibility
  *
@@ -17,13 +17,13 @@ import { useMemo } from "react";
  * Props:
  *  - src: image URL (default /canada.webp)
  *  - variant: "hero" (full-bleed, side scrim) | "box" (framed card, center scrim)
- *  - particleCount: how many dust particles (default 18)
+ *  - particleCount: how many dust particles (default 10)
  *  - scrimOpacity: 0..1 intensity of the darkening scrim (default 0.55)
  */
 export function CinematicHeroImage({
   src = "/canada.webp",
   variant = "hero",
-  particleCount = 18,
+  particleCount = 10,
   scrimOpacity = 0.55,
 }: {
   src?: string;
@@ -50,12 +50,16 @@ export function CinematicHeroImage({
 
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Layer 1: the image with Ken-Burns push-in */}
+      {/* Layer 1: the image with Ken-Burns push-in (eager + high priority for LCP) */}
       <div className="absolute inset-0 hero-kenburns">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
           alt=""
+          loading="eager"
+          // @ts-expect-error fetchPriority is valid HTML but not in React types yet
+          fetchpriority="high"
+          decoding="async"
           className="h-full w-full object-cover"
           style={{ objectPosition: isBox ? "center 30%" : "center 35%" }}
         />
@@ -65,7 +69,7 @@ export function CinematicHeroImage({
       <div className="absolute inset-0 bg-primary/15 mix-blend-multiply" />
       <div className="absolute inset-0 bg-gradient-to-tr from-primary/25 via-transparent to-amber-200/10 mix-blend-overlay" />
 
-      {/* Layer 3: animated diagonal light sheen (lens flare) */}
+      {/* Layer 3: animated diagonal light sheen (lens flare) — GPU transform only */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
           className="hero-sheen absolute top-0 h-full w-1/3"
@@ -73,16 +77,17 @@ export function CinematicHeroImage({
             background:
               "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%)",
             filter: "blur(8px)",
+            willChange: "transform, opacity",
           }}
         />
       </div>
 
-      {/* Layer 4: floating dust particles */}
-      <div className="pointer-events-none absolute inset-0">
+      {/* Layer 4: floating dust particles — pure transform, no box-shadow */}
+      <div className="pointer-events-none absolute inset-0" style={{ willChange: "transform" }}>
         {particles.map((p, i) => (
           <span
             key={i}
-            className="absolute rounded-full bg-white"
+            className="absolute rounded-full bg-white/80"
             style={
               {
                 left: p.left,
@@ -92,7 +97,7 @@ export function CinematicHeroImage({
                 "--dx": p.dx,
                 "--dy": p.dy,
                 animation: `hero-dust ${p.dur} ease-in-out ${p.delay} infinite`,
-                boxShadow: "0 0 4px rgba(255,255,255,0.7)",
+                willChange: "transform, opacity",
               } as React.CSSProperties
             }
           />

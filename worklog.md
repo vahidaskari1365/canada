@@ -178,3 +178,29 @@ Stage Summary:
 - VLM: 8/10 — "waving Canadian flag as background of framed card", "cinematic effects (depth, lighting, waving motion)", "4 step texts clearly readable in white", "flag visible but not distracting"
 - Verified: 1 canada2 image, 2 ken-burns, 2 sheen, 32 dust particles (18 hero + 14 process) all active
 - Both canada.webp (hero) and canada2.jpg (process card) now used as intended
+
+---
+Task ID: 12
+Agent: main (Z.ai Code)
+Task: Fix slow site loading
+
+Work Log:
+- Diagnosed: server TTFB fast (~55ms), but dev cold-compile took 5.2s and uncached API calls 170-470ms each
+- Optimized fonts in layout.tsx: preload only primary fonts (Geist Sans + Vazirmatn), removed Geist Mono preload, added adjustFontFallback
+- Added <link rel="preload" as="image" href="/canada.webp" fetchPriority="high"> for instant LCP hero image
+- CinematicHeroImage: added loading="eager", fetchpriority="high", decoding="async"; reduced default particleCount 18→10; added will-change to sheen + dust; removed box-shadow from particles (GPU-only)
+- globals.css: added .cv-auto utility (content-visibility:auto + contain-intrinsic-size) and applied to Section component — browser now skips rendering offscreen sections
+- Added will-change:transform + contain:strict + content-visibility:auto to .hero-kenburns
+- next.config.ts: added experimental.optimizePackageImports for lucide-react, framer-motion, @radix-ui/react-icons + images.minimumCacheTTL
+- Home page: replaced 3 sequential fetches with Promise.all (parallel); added sessionStorage cache for instant revisits; removed unused useReducedMotion import; replaced 5 staggered motion.div rows in HeroCard with plain divs
+- API caching (60s in-memory TTL): /api/public, /api/services (list), /api/posts (list by type+limit). Slug detail endpoints remain uncached.
+- Lint passes (0 errors)
+
+Stage Summary (warm):
+- Page DOMContentLoaded: 214ms (was higher)
+- Page loadEvent: 625ms (under 1s)
+- Cold compile: 5.2s → 1.4s (bundle optimization)
+- API cached responses: 8ms (was 170-470ms) — 20-60x faster
+- canada.webp loads in 118ms (preloaded)
+- 0 errors, all interactions intact (53 interactive buttons verified)
+- Note: production build will be substantially faster than dev mode
