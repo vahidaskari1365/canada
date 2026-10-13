@@ -25,6 +25,7 @@ import {
 import { useLocale, useRouter } from "@/lib/app-context";
 import { Section, SectionHeading, Eyebrow, StatNumber } from "../site/ui-bits";
 import { ServiceIcon } from "../site/service-icon";
+import { MapleFlagBg } from "../site/maple-flag-bg";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { localized, formatDate, formatCurrency } from "@/lib/content";
@@ -170,12 +171,15 @@ export function HomePage() {
   return (
     <div className="overflow-hidden">
       {/* ===== HERO ===== */}
-      <section className="relative">
-        {/* backdrop */}
+      <section className="relative overflow-hidden">
+        {/* backdrop with the waving Canadian flag */}
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-0 maple-pattern opacity-60" />
+          <div className="absolute inset-0 maple-pattern opacity-25" />
+          <MapleFlagBg variant="hero" />
           <div className="absolute -top-32 ltr:right-0 rtl:left-0 h-[480px] w-[480px] rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute top-40 ltr:left-0 rtl:right-0 h-[360px] w-[360px] rounded-full bg-amber-500/5 blur-3xl" />
+          {/* fade the flag into the page background at the bottom for a smooth blend */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background via-background/70 to-transparent" />
         </div>
 
         <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-10 px-4 pb-16 pt-12 sm:px-6 md:pt-20 lg:grid-cols-12 lg:gap-8 lg:px-8 lg:pb-24">

@@ -62,3 +62,26 @@ Stage Summary:
 - Admin CMS at /admin (login: admin / maple2025) with no-code post/service/content editing
 - Booking + mock payment flow working
 - DB seeded and APIs verified
+
+---
+Task ID: 7
+Agent: main (Z.ai Code)
+Task: Add waving Canadian flag as hero + site-wide background
+
+Work Log:
+- Created MapleFlagBg component using SVG feTurbulence + feDisplacementMap filter for real cloth-wave distortion
+- Animated baseFrequency (9s loop) + seed (18s loop) for continuous rippling
+- Added CSS flag-sway keyframes (skewY/rotate/translate/scaleY) for gentle wind motion on top of displacement
+- Canadian flag built as SVG symbol: red side panels + white center + 14-point red maple leaf path
+- Two variants: "site" (position:fixed, opacity 0.13, 4 offset tiles covering viewport) and "hero" (position:absolute, opacity 0.2, large single flag)
+- Integrated site-wide flag in layout.tsx (fixed behind all content, content wrapped in relative z-10)
+- Added prominent waving flag to homepage hero (with gradient fade to background at bottom)
+- Added waving flag to PageHero component (all inner pages: services, blog, about, contact, etc.)
+- Reduced site flag opacity in dark mode (0.09) to keep white center subtle
+- Respects prefers-reduced-motion (freezes animation)
+- Lint passes (0 errors)
+
+Stage Summary:
+- Hero: prominent waving Canadian flag (opacity 0.2, displacement scale 140) — VLM confirms rippled fabric edges + readable text
+- Site-wide: subtle fixed flag (opacity 0.13, displacement scale 70) visible behind all content during scroll — VLM confirms visible at 6/10 across services & testimonials sections while text stays readable
+- Flag genuinely animates (wave + sway) — verified via 5s video recording
