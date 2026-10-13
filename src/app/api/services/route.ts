@@ -26,11 +26,16 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(cache.data);
   }
 
-  const services = await db.service.findMany({
-    where: { published: true },
-    orderBy: { order: "asc" },
-    include: { _count: { select: { requirements: true, steps: true } } },
-  });
-  cache = { data: services, at: now };
-  return NextResponse.json(services);
+  try {
+    const services = await db.service.findMany({
+      where: { published: true },
+      orderBy: { order: "asc" },
+      include: { _count: { select: { requirements: true, steps: true } } },
+    });
+    cache = { data: services, at: now };
+    return NextResponse.json(services);
+  } catch (e: any) {
+    if (cache) return NextResponse.json(cache.data);
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
 }

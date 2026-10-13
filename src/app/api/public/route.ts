@@ -14,26 +14,41 @@ export async function GET() {
     return NextResponse.json(cache.data);
   }
 
-  const [testimonials, team, packages, faqs, settings, categories] = await Promise.all([
-    db.testimonial.findMany({ where: { published: true }, orderBy: { order: "asc" } }),
-    db.teamMember.findMany({ where: { published: true }, orderBy: { order: "asc" } }),
-    db.consultationPackage.findMany({ orderBy: { order: "asc" } }),
-    db.faq.findMany({ orderBy: { order: "asc" } }),
-    db.setting.findMany(),
-    db.category.findMany(),
-  ]);
+  try {
+    const [testimonials, team, packages, faqs, settings, categories] = await Promise.all([
+      db.testimonial.findMany({ where: { published: true }, orderBy: { order: "asc" } }),
+      db.teamMember.findMany({ where: { published: true }, orderBy: { order: "asc" } }),
+      db.consultationPackage.findMany({ orderBy: { order: "asc" } }),
+      db.faq.findMany({ orderBy: { order: "asc" } }),
+      db.setting.findMany(),
+      db.category.findMany(),
+    ]);
 
-  const settingsMap: Record<string, string> = {};
-  for (const s of settings) settingsMap[s.key] = s.value;
+    const settingsMap: Record<string, string> = {};
+    for (const s of settings) settingsMap[s.key] = s.value;
 
-  const data = {
-    testimonials,
-    team,
-    packages,
-    faqs,
-    categories,
-    settings: settingsMap,
-  };
-  cache = { data, at: now };
-  return NextResponse.json(data);
+    const data = {
+      testimonials,
+      team,
+      packages,
+      faqs,
+      categories,
+      settings: settingsMap,
+    };
+    cache = { data, at: now };
+    return NextResponse.json(data);
+  } catch (e: any) {
+    // If the DB isn't reachable (e.g. cold start on serverless), return
+    // whatever we last cached or an empty payload so the UI still renders.
+    if (cache) return NextResponse.json(cache.data);
+    return NextResponse.json({
+      testimonials: [],
+      team: [],
+      packages: [],
+      faqs: [],
+      categories: [],
+      settings: {},
+      error: e.message,
+    });
+  }
 }
