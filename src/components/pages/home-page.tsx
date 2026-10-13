@@ -25,7 +25,6 @@ import {
 import { useLocale, useRouter } from "@/lib/app-context";
 import { Section, SectionHeading, Eyebrow, StatNumber } from "../site/ui-bits";
 import { ServiceIcon } from "../site/service-icon";
-import { MapleFlagBg } from "../site/maple-flag-bg";
 import { CinematicHeroImage } from "../site/cinematic-hero-image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -175,10 +174,6 @@ export function HomePage() {
       <section className="relative min-h-[88dvh] overflow-hidden">
         {/* Cinematic image background (ken-burns + sheen + dust + vignette) */}
         <CinematicHeroImage />
-        {/* Subtle waving flag layered on top of the image for extra life */}
-        <div className="pointer-events-none absolute inset-0">
-          <MapleFlagBg variant="hero" opacity={0.18} />
-        </div>
 
         <div className="relative mx-auto flex min-h-[88dvh] w-full max-w-[1280px] flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
           {/* Hero copy — overlays the cinematic image */}

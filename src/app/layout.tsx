@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
-import { MapleFlagBg } from "@/components/site/maple-flag-bg";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,11 +64,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${vazirmatn.variable} antialiased bg-background text-foreground`}
       >
-        {/* Site-wide waving Canadian flag — subtle, fixed behind all content */}
-        <MapleFlagBg variant="site" />
-        <div className="relative z-10">
-          {children}
-        </div>
+        {children}
         <Toaster />
         <SonnerToaster position="top-center" />
       </body>

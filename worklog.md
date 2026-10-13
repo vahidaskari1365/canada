@@ -135,3 +135,23 @@ Stage Summary:
 - Image, ken-burns, sheen, 18 dust particles, vignette all verified rendering
 - Headline readable, glassy floating CRS card visible
 - 6-second video recorded confirming live animation
+
+---
+Task ID: 10
+Agent: main (Z.ai Code)
+Task: Remove the custom SVG waving flag from the entire site
+
+Work Log:
+- Removed MapleFlagBg from layout.tsx (site-wide fixed flag) and restored direct children rendering
+- Removed MapleFlagBg layer from homepage hero (only CinematicHeroImage / canada.webp remains)
+- Removed MapleFlagBg from PageHero (inner pages) — restored clean backdrop with maple-pattern dot texture + primary blur blobs
+- Removed unused MapleFlagBg import from home-page.tsx
+- Deleted src/components/site/maple-flag-bg.tsx component file entirely
+- Cleaned flag-related CSS from globals.css (flag-sway keyframes, .maple-flag-bg reduced-motion rules, .dark .maple-flag-site rule)
+- Lint passes (0 errors)
+
+Stage Summary:
+- VLM home hero: "Yes" — background is the maple-leaf artwork (not a flag with side panels), "No" wavy fabric flag anywhere
+- VLM inner page: "clean and subtle (light pink/white gradient with no Canadian flag)"
+- canada.webp cinematic hero image is the ONLY flag-related visual now
+- Verified 0 feTurbulence SVG elements on both home and inner pages

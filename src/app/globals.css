@@ -176,15 +176,6 @@
   animation: marquee 30s linear infinite reverse;
 }
 
-/* Flag waving — gentle wind sway (complements the SVG displacement ripple) */
-@keyframes flag-sway {
-  0%, 100% { transform: skewY(0deg) rotate(0deg) translateX(0) scaleY(1); }
-  20%      { transform: skewY(-0.6deg) rotate(0.5deg) translateX(-7px) scaleY(1.01); }
-  40%      { transform: skewY(0.2deg) rotate(-0.2deg) translateX(3px) scaleY(0.995); }
-  60%      { transform: skewY(0.6deg) rotate(-0.5deg) translateX(7px) scaleY(1.01); }
-  80%      { transform: skewY(-0.2deg) rotate(0.2deg) translateX(-3px) scaleY(0.995); }
-}
-
 /* ===== Cinematic hero motion graphics ===== */
 
 /* Slow Ken-Burns push-in on the hero image */
@@ -231,23 +222,12 @@
   50%      { transform: translate3d(0, -14px, 0); }
 }
 
-/* Respect reduced motion: freeze the wave + sway */
+/* Respect reduced motion: freeze the cinematic animations */
 @media (prefers-reduced-motion: reduce) {
-  .maple-flag-bg svg g[filter] {
-    animation: none !important;
-  }
-  .maple-flag-bg svg animate {
-    display: none;
-  }
   .hero-kenburns,
   .hero-sheen {
     animation: none !important;
   }
-}
-
-/* Tone the site-wide flag down in dark mode so the white center stays subtle */
-.dark .maple-flag-site {
-  opacity: 0.15 !important;
 }
 
 /* Smooth scroll */
