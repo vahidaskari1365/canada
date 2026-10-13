@@ -362,7 +362,7 @@ export function HomePage() {
         )}
       </Section>
 
-      {/* ===== PROCESS ===== */}
+      {/* ===== PROCESS — cinematic framed card with canada.webp bg ===== */}
       <Section className="bg-muted/20">
         <SectionHeading
           eyebrow={t("home.process.badge")}
@@ -370,33 +370,46 @@ export function HomePage() {
           align="center"
           className="mx-auto items-center"
         />
-        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {process.map((p, i) => {
-            const Icon = p.icon;
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: i * 0.1, type: "spring", stiffness: 80 }}
-                className="relative rounded-2xl border border-border/60 bg-background p-6"
-              >
-                <span className="absolute top-5 ltr:right-5 rtl:left-5 font-mono text-5xl font-semibold text-primary/10">
-                  0{i + 1}
-                </span>
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Icon className="h-6 w-6" strokeWidth={1.75} />
-                </span>
-                <h3 className="mt-5 text-lg font-semibold">
-                  {locale === "fa" ? p.titleFa : p.titleEn}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  {locale === "fa" ? p.descFa : p.descEn}
-                </p>
-              </motion.div>
-            );
-          })}
+        <div className="relative mt-12 overflow-hidden rounded-3xl border border-border/60">
+          {/* Cinematic canada2.jpg background with live motion graphics */}
+          <CinematicHeroImage src="/canada2.jpg" variant="box" scrimOpacity={0.62} particleCount={14} />
+          {/* inner frame border for a polished card edge */}
+          <div className="pointer-events-none absolute inset-0 z-10 rounded-3xl ring-1 ring-inset ring-white/10" />
+
+          {/* Content overlay */}
+          <div className="relative z-20 grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4">
+            {process.map((p, i) => {
+              const Icon = p.icon;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ delay: i * 0.12, type: "spring", stiffness: 80 }}
+                  className="group relative p-7 text-white sm:p-8"
+                >
+                  {/* vertical divider between steps (not on the last) */}
+                  {i < process.length - 1 && (
+                    <span className="pointer-events-none absolute top-7 bottom-7 hidden w-px bg-white/15 ltr:right-0 rtl:left-0 lg:block" />
+                  )}
+                  {/* big ghost step number */}
+                  <span className="pointer-events-none absolute top-4 ltr:right-4 rtl:left-4 font-mono text-6xl font-bold text-white/10 transition-colors group-hover:text-white/20">
+                    0{i + 1}
+                  </span>
+                  <span className="relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/15 text-white ring-1 ring-inset ring-white/25 backdrop-blur-sm transition-transform group-hover:scale-110">
+                    <Icon className="h-6 w-6" strokeWidth={1.75} />
+                  </span>
+                  <h3 className="relative mt-5 text-lg font-semibold drop-shadow-sm">
+                    {locale === "fa" ? p.titleFa : p.titleEn}
+                  </h3>
+                  <p className="relative mt-2 text-sm leading-relaxed text-white/80 drop-shadow-sm">
+                    {locale === "fa" ? p.descFa : p.descEn}
+                  </p>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </Section>
 

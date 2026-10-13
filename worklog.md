@@ -155,3 +155,26 @@ Stage Summary:
 - VLM inner page: "clean and subtle (light pink/white gradient with no Canadian flag)"
 - canada.webp cinematic hero image is the ONLY flag-related visual now
 - Verified 0 feTurbulence SVG elements on both home and inner pages
+
+---
+Task ID: 11
+Agent: main (Z.ai Code)
+Task: Use canada2.jpg as background for the "Four steps" process card with live motion graphics
+
+Work Log:
+- Copied upload/canada2.jpg (626x310 JPEG, real photo of waving Canadian flag) to public/canada2.jpg
+- Extended CinematicHeroImage component with configurable props: src, variant ("hero"|"box"), particleCount, scrimOpacity
+  - variant="box": dark overall scrim (rgba 0,0,0,scrimOpacity) + bottom gradient — for framed cards where text sits on top of image
+  - variant="hero": side scrims + top/bottom fades — for full-bleed hero
+- Rewrote the Process section ("چهار گام تا رسیدن به کانادا") as a single framed rounded-3xl card:
+  - canada2.jpg as cinematic background with ken-burns push-in, diagonal light sheen, 14 floating dust particles, breathing vignette
+  - White text overlay with drop-shadow for legibility on the flag image
+  - 4 step cards with glassy icon tiles (bg-white/15 + ring-white/25 + backdrop-blur), ghost step numbers, vertical dividers, hover scale on icons
+  - Inner ring-1 ring-white/10 frame edge for polish
+- Kept the homepage hero using canada.webp (unchanged)
+- Lint passes (0 errors)
+
+Stage Summary:
+- VLM: 8/10 — "waving Canadian flag as background of framed card", "cinematic effects (depth, lighting, waving motion)", "4 step texts clearly readable in white", "flag visible but not distracting"
+- Verified: 1 canada2 image, 2 ken-burns, 2 sheen, 32 dust particles (18 hero + 14 process) all active
+- Both canada.webp (hero) and canada2.jpg (process card) now used as intended
