@@ -107,3 +107,31 @@ Stage Summary:
 - VLM confirms: "The flag shown is the National Flag of Canada... the iconic 11-pointed maple leaf shape is distinct and easily recognizable"
 - Hero: flag clearly visible + readable text ✓
 - Site-wide: Canadian flag recognizable during scroll ✓
+
+---
+Task ID: 9
+Agent: main (Z.ai Code)
+Task: Add uploaded canada.webp image to hero with cinematic motion graphics
+
+Work Log:
+- Copied upload/canada.webp to public/canada.webp (992x554 WebP, stylized 3D maple leaf render)
+- Added cinematic keyframes to globals.css: hero-kenburns (slow push-in), hero-sheen (diagonal light sweep), hero-dust (floating particles), hero-vignette (breathing), hero-drift (parallax)
+- Created CinematicHeroImage component with 6 layered effects:
+  1. canada.webp image with Ken-Burns push-in (22s loop)
+  2. Crimson color grade (primary/15 multiply + primary/25 overlay)
+  3. Animated diagonal light sheen sweeping across (7s loop)
+  4. 18 floating dust particles with random drift
+  5. Breathing radial vignette (8s loop)
+  6. Gradient scrims (left-to-right for text, top + bottom fades)
+- Rewrote homepage hero to full-bleed cinematic (min-h-88dvh) with text overlaying the image
+- Kept subtle waving MapleFlagBg layered on top (opacity 0.18) for extra life
+- HeroCard converted to glassy (backdrop-blur, bg-background/70) and floats bottom-right with drift animation
+- Trust badges use backdrop-blur pills for legibility on the image
+- All animations respect prefers-reduced-motion
+- Lint passes (0 errors)
+
+Stage Summary:
+- VLM: 9/10 visual appeal — "feels cinematic with depth, gradients, and atmospheric effects"
+- Image, ken-burns, sheen, 18 dust particles, vignette all verified rendering
+- Headline readable, glassy floating CRS card visible
+- 6-second video recorded confirming live animation

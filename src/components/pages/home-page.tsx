@@ -26,6 +26,7 @@ import { useLocale, useRouter } from "@/lib/app-context";
 import { Section, SectionHeading, Eyebrow, StatNumber } from "../site/ui-bits";
 import { ServiceIcon } from "../site/service-icon";
 import { MapleFlagBg } from "../site/maple-flag-bg";
+import { CinematicHeroImage } from "../site/cinematic-hero-image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { localized, formatDate, formatCurrency } from "@/lib/content";
@@ -170,33 +171,29 @@ export function HomePage() {
 
   return (
     <div className="overflow-hidden">
-      {/* ===== HERO ===== */}
-      <section className="relative overflow-hidden">
-        {/* backdrop with the waving Canadian flag */}
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <MapleFlagBg variant="hero" />
-          {/* soft scrim so text stays readable on top of the flag */}
-          <div className="absolute inset-0 bg-gradient-to-br from-background/70 via-background/40 to-background/70" />
-          <div className="absolute -top-32 ltr:right-0 rtl:left-0 h-[480px] w-[480px] rounded-full bg-primary/10 blur-3xl" />
-          <div className="absolute top-40 ltr:left-0 rtl:right-0 h-[360px] w-[360px] rounded-full bg-amber-500/5 blur-3xl" />
-          {/* fade the flag into the page background at the bottom for a smooth blend */}
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background via-background/70 to-transparent" />
+      {/* ===== HERO — cinematic full-bleed with canada.webp ===== */}
+      <section className="relative min-h-[88dvh] overflow-hidden">
+        {/* Cinematic image background (ken-burns + sheen + dust + vignette) */}
+        <CinematicHeroImage />
+        {/* Subtle waving flag layered on top of the image for extra life */}
+        <div className="pointer-events-none absolute inset-0">
+          <MapleFlagBg variant="hero" opacity={0.18} />
         </div>
 
-        <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-10 px-4 pb-16 pt-12 sm:px-6 md:pt-20 lg:grid-cols-12 lg:gap-8 lg:px-8 lg:pb-24">
-          {/* Left: copy */}
+        <div className="relative mx-auto flex min-h-[88dvh] w-full max-w-[1280px] flex-col justify-center px-4 py-20 sm:px-6 lg:px-8">
+          {/* Hero copy — overlays the cinematic image */}
           <motion.div
             variants={stagger}
             initial="hidden"
             animate="show"
-            className="lg:col-span-7 lg:pt-8"
+            className="max-w-2xl"
           >
             <motion.div variants={fade}>
               <Eyebrow>{t("home.hero.badge")}</Eyebrow>
             </motion.div>
             <motion.h1
               variants={fade}
-              className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-[4.2rem]"
+              className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-tight drop-shadow-sm sm:text-5xl md:text-6xl lg:text-[4.4rem]"
             >
               {locale === "fa" ? (
                 <>
@@ -204,7 +201,7 @@ export function HomePage() {
                   <span className="relative whitespace-nowrap text-primary">
                     کانادا
                     <svg
-                      className="absolute -bottom-2 left-0 h-3 w-full text-primary/30"
+                      className="absolute -bottom-2 left-0 h-3 w-full text-primary/40"
                       viewBox="0 0 200 12"
                       preserveAspectRatio="none"
                     >
@@ -221,7 +218,7 @@ export function HomePage() {
                   <span className="relative whitespace-nowrap text-primary">
                     Canada
                     <svg
-                      className="absolute -bottom-2 left-0 h-3 w-full text-primary/30"
+                      className="absolute -bottom-2 left-0 h-3 w-full text-primary/40"
                       viewBox="0 0 200 12"
                       preserveAspectRatio="none"
                     >
@@ -236,7 +233,7 @@ export function HomePage() {
             </motion.h1>
             <motion.p
               variants={fade}
-              className="mt-6 max-w-xl text-balance text-base leading-relaxed text-muted-foreground md:text-lg"
+              className="mt-6 max-w-xl text-balance text-base leading-relaxed text-foreground/80 drop-shadow-sm md:text-lg"
             >
               {t("home.hero.desc")}
             </motion.p>
@@ -245,63 +242,69 @@ export function HomePage() {
                 {t("home.hero.cta1")}
                 <Arrow className="h-4 w-4" />
               </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate("/services")}>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => navigate("/services")}
+                className="border-foreground/20 bg-background/30 backdrop-blur-sm hover:bg-background/50"
+              >
                 {t("home.hero.cta2")}
               </Button>
             </motion.div>
 
             {/* trust row */}
-            <motion.div variants={fade} className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
-              <span className="inline-flex items-center gap-2">
+            <motion.div variants={fade} className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-foreground/80">
+              <span className="inline-flex items-center gap-2 rounded-full bg-background/40 px-3 py-1 backdrop-blur-sm">
                 <ShieldCheck className="h-4 w-4 text-primary" />
                 {locale === "fa" ? "مشاور رسمی RCIC" : "Licensed RCIC"}
               </span>
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-background/40 px-3 py-1 backdrop-blur-sm">
                 <CheckCircle2 className="h-4 w-4 text-primary" />
                 {locale === "fa" ? "۹۶٪ نرخ موفقیت" : "96% success rate"}
               </span>
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-background/40 px-3 py-1 backdrop-blur-sm">
                 <Star className="h-4 w-4 text-primary" />
                 {locale === "fa" ? "۴٬۸۰۰+ موفقیت" : "4,800+ successes"}
               </span>
             </motion.div>
           </motion.div>
-
-          {/* Right: visual card */}
-          <motion.div
-            initial={{ opacity: 0, x: dir === "rtl" ? -40 : 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, type: "spring", stiffness: 60 }}
-            className="lg:col-span-5"
-          >
-            <HeroCard />
-          </motion.div>
         </div>
 
-        {/* Stats strip */}
-        <div className="border-y border-border/60 bg-muted/30">
-          <div className="mx-auto grid w-full max-w-[1280px] grid-cols-2 divide-border/60 px-4 sm:px-6 md:grid-cols-4 md:divide-x rtl:md:divide-x-reverse lg:px-8">
-            {[
-              { v: "۴٬۸۰۰+", vEn: "4,800+", k: "home.stats.success" },
-              { v: "۸", vEn: "8", k: "home.stats.years" },
-              { v: "۳۲", vEn: "32", k: "home.stats.countries" },
-              { v: "۹۶٪", vEn: "96%", k: "home.stats.successRate" },
-            ].map((s, i) => (
-              <div
-                key={i}
-                className="flex flex-col items-center gap-1 px-2 py-6 text-center md:py-8"
-              >
-                <span className="text-3xl font-semibold tracking-tight text-primary md:text-4xl">
-                  <StatNumber value={locale === "fa" ? s.v : s.vEn} />
-                </span>
-                <span className="text-xs uppercase tracking-wider text-muted-foreground md:text-sm">
-                  {t(s.k)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Floating CRS card — bottom-right, glassy, drifts gently */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, type: "spring", stiffness: 70 }}
+          className="pointer-events-none absolute bottom-8 ltr:right-6 rtl:left-6 z-10 hidden md:block"
+          style={{ animation: "hero-drift 9s ease-in-out infinite" }}
+        >
+          <HeroCard />
+        </motion.div>
       </section>
+
+      {/* Stats strip */}
+      <div className="border-y border-border/60 bg-muted/30">
+        <div className="mx-auto grid w-full max-w-[1280px] grid-cols-2 divide-border/60 px-4 sm:px-6 md:grid-cols-4 md:divide-x rtl:md:divide-x-reverse lg:px-8">
+          {[
+            { v: "۴٬۸۰۰+", vEn: "4,800+", k: "home.stats.success" },
+            { v: "۸", vEn: "8", k: "home.stats.years" },
+            { v: "۳۲", vEn: "32", k: "home.stats.countries" },
+            { v: "۹۶٪", vEn: "96%", k: "home.stats.successRate" },
+          ].map((s, i) => (
+            <div
+              key={i}
+              className="flex flex-col items-center gap-1 px-2 py-6 text-center md:py-8"
+            >
+              <span className="text-3xl font-semibold tracking-tight text-primary md:text-4xl">
+                <StatNumber value={locale === "fa" ? s.v : s.vEn} />
+              </span>
+              <span className="text-xs uppercase tracking-wider text-muted-foreground md:text-sm">
+                {t(s.k)}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* ===== SERVICES ===== */}
       <Section>
@@ -697,11 +700,14 @@ function HeroCard() {
   const Arrow = dir === "rtl" ? ArrowLeft : ArrowRight;
   const { navigate } = useRouter();
   return (
-    <div className="relative mx-auto w-full max-w-md">
-      {/* main card */}
-      <div className="relative z-10 rounded-3xl border border-border/60 bg-background p-6 shadow-xl shadow-primary/5">
+    <button
+      onClick={() => navigate("/assessment")}
+      className="relative w-full max-w-xs text-start"
+    >
+      {/* main card — glassy to sit on the cinematic image */}
+      <div className="relative z-10 rounded-3xl border border-white/30 bg-background/70 p-6 shadow-2xl shadow-primary/20 backdrop-blur-xl">
         <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+          <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             {locale === "fa" ? "بررسی پروفایل آنلاین" : "Live profile review"}
           </span>
@@ -766,7 +772,7 @@ function HeroCard() {
 
         <Button
           className="mt-6 w-full gap-1.5"
-          onClick={() => navigate("/assessment")}
+          onClick={(e) => { e.stopPropagation(); navigate("/assessment"); }}
         >
           {locale === "fa" ? "امتیاز خود را بسنجید" : "Check your score"}
           <Arrow className="h-4 w-4" />
@@ -778,7 +784,7 @@ function HeroCard() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.8, type: "spring", stiffness: 120 }}
-        className="absolute -bottom-4 ltr:-left-4 rtl:-right-4 z-20 rounded-2xl border border-border/60 bg-background p-3 shadow-lg"
+        className="absolute -bottom-4 ltr:-left-4 rtl:-right-4 z-20 rounded-2xl border border-white/30 bg-background/80 p-3 shadow-lg backdrop-blur-xl"
       >
         <div className="flex items-center gap-2">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -794,6 +800,6 @@ function HeroCard() {
           </div>
         </div>
       </motion.div>
-    </div>
+    </button>
   );
 }

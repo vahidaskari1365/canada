@@ -185,6 +185,52 @@
   80%      { transform: skewY(-0.2deg) rotate(0.2deg) translateX(-3px) scaleY(0.995); }
 }
 
+/* ===== Cinematic hero motion graphics ===== */
+
+/* Slow Ken-Burns push-in on the hero image */
+@keyframes hero-kenburns {
+  0%   { transform: scale(1.08) translate3d(-1.5%, -1%, 0); }
+  50%  { transform: scale(1.14) translate3d(1.5%, 1%, 0); }
+  100% { transform: scale(1.08) translate3d(-1.5%, -1%, 0); }
+}
+.hero-kenburns {
+  animation: hero-kenburns 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Diagonal light sweep across the image (cinematic lens flare feel) */
+@keyframes hero-sheen {
+  0%   { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  18%  { opacity: 0.55; }
+  40%  { opacity: 0.2; }
+  60%  { opacity: 0.5; }
+  100% { transform: translateX(220%) skewX(-18deg); opacity: 0; }
+}
+.hero-sheen {
+  animation: hero-sheen 7s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
+
+/* Floating particle dust (cinematic atmosphere) */
+@keyframes hero-dust {
+  0%   { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.5; }
+  100% { transform: translate3d(var(--dx, 30px), var(--dy, -120px), 0) scale(1.4); opacity: 0; }
+}
+
+/* Vignette breathing — subtle darkening pulse around edges */
+@keyframes hero-vignette {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.7; }
+}
+
+/* Slow parallax drift for foreground decorative shapes */
+@keyframes hero-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -14px, 0); }
+}
+
 /* Respect reduced motion: freeze the wave + sway */
 @media (prefers-reduced-motion: reduce) {
   .maple-flag-bg svg g[filter] {
@@ -192,6 +238,10 @@
   }
   .maple-flag-bg svg animate {
     display: none;
+  }
+  .hero-kenburns,
+  .hero-sheen {
+    animation: none !important;
   }
 }
 
