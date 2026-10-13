@@ -204,3 +204,25 @@ Stage Summary (warm):
 - canada.webp loads in 118ms (preloaded)
 - 0 errors, all interactions intact (53 interactive buttons verified)
 - Note: production build will be substantially faster than dev mode
+
+---
+Task ID: 13
+Agent: main (Z.ai Code)
+Task: Fix actual slow-load root cause (hydration errors causing Fast Refresh rebuilds)
+
+Work Log:
+- Diagnosed real cause: 2 hydration errors were triggering constant Fast Refresh rebuilds (84 rebuilds counted) making the page feel frozen
+  1. HeroCard was a <button> containing a <Button> (button-in-button = invalid HTML)
+  2. fetchpriority="high" (lowercase) on img — React wants fetchPriority (camelCase)
+- Fixed HeroCard: changed outer <button> to <div role="button" tabIndex={0}> with onClick + onKeyDown (accessible)
+- Fixed fetchpriority → fetchPriority in cinematic-hero-image.tsx
+- Cleared .next cache and browser console for fresh measurement
+
+Stage Summary (clean cold load, dev mode):
+- Cold compile: 3.7s (first visit only — production build eliminates this)
+- First Contentful Paint: 1004ms
+- Time to Interactive: 303ms
+- Load event: 639ms
+- Console errors after reload: 0 (was 54 nested-button + 26 fetchpriority)
+- 39 resources, no rebuild loops
+- All nav buttons interactive immediately

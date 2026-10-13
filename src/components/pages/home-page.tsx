@@ -732,9 +732,12 @@ function HeroCard() {
   const Arrow = dir === "rtl" ? ArrowLeft : ArrowRight;
   const { navigate } = useRouter();
   return (
-    <button
+    <div
       onClick={() => navigate("/assessment")}
-      className="relative w-full max-w-xs text-start"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); navigate("/assessment"); } }}
+      className="relative w-full max-w-xs cursor-pointer text-start"
     >
       {/* main card — glassy to sit on the cinematic image */}
       <div className="relative z-10 rounded-3xl border border-white/30 bg-background/70 p-6 shadow-2xl shadow-primary/20 backdrop-blur-xl">
@@ -829,6 +832,6 @@ function HeroCard() {
           </div>
         </div>
       </motion.div>
-    </button>
+    </div>
   );
 }

@@ -57,8 +57,7 @@ export function CinematicHeroImage({
           src={src}
           alt=""
           loading="eager"
-          // @ts-expect-error fetchPriority is valid HTML but not in React types yet
-          fetchpriority="high"
+          fetchPriority="high"
           decoding="async"
           className="h-full w-full object-cover"
           style={{ objectPosition: isBox ? "center 30%" : "center 35%" }}
