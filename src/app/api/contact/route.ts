@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, DB_WRITABLE } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +10,9 @@ export async function POST(req: NextRequest) {
     const { name, email, subject, message } = body;
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+    if (!DB_WRITABLE) {
+      return NextResponse.json({ ok: true, demo: true });
     }
     await db.contactMessage.create({
       data: { name, email, subject: subject || "", message },
@@ -23,6 +26,10 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const authed = await getAdminSession();
   if (!authed) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const msgs = await db.contactMessage.findMany({ orderBy: { createdAt: "desc" }, take: 200 });
-  return NextResponse.json(msgs);
+  try {
+    const msgs = await db.contactMessage.findMany({ orderBy: { createdAt: "desc" }, take: 200 });
+    return NextResponse.json(msgs);
+  } catch {
+    return NextResponse.json([]);
+  }
 }

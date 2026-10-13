@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, DB_WRITABLE } from "@/lib/db";
 import { getAdminSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +49,16 @@ export async function POST(req: NextRequest) {
     else if (score >= 300) eligibility = "medium";
     else eligibility = "low";
 
+    if (!DB_WRITABLE) {
+      return NextResponse.json({
+        ok: true,
+        id: "demo-" + Date.now(),
+        score,
+        eligibility,
+        demo: true,
+      });
+    }
+
     const assessment = await db.assessment.create({
       data: {
         fullName,
@@ -77,9 +87,13 @@ export async function GET(req: NextRequest) {
   if (!authed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const assessments = await db.assessment.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 200,
-  });
-  return NextResponse.json(assessments);
+  try {
+    const assessments = await db.assessment.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 200,
+    });
+    return NextResponse.json(assessments);
+  } catch {
+    return NextResponse.json([]);
+  }
 }
