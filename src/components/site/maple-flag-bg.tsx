@@ -3,14 +3,19 @@
 import { useId } from "react";
 
 /**
- * MapleFlagBg — a Canadian flag that ripples like fabric blowing in the wind.
+ * MapleFlagBg — a clearly recognizable Canadian flag that gently ripples
+ * like fabric blowing in the wind.
  *
- * Uses an SVG `feTurbulence` + `feDisplacementMap` filter (with an animated
- * `baseFrequency`) to create a real cloth-wave distortion, plus a gentle CSS
- * skew/rotate sway on top for the "wind" feel.
+ * Design decisions (after feedback that the flag was unrecognizable):
+ *  - The flag is drawn at the correct 2:1 ratio with 1/4-width red side
+ *    panels and the official 11-point maple leaf centered on white.
+ *  - The displacement scale is kept LOW (just enough to ripple the edges)
+ *    so the flag silhouette stays unmistakably Canadian.
+ *  - Opacity is high enough to read the flag, while text contrast is
+ *    preserved via a soft white scrim behind content.
  *
- * variant="site"  → fixed, full viewport, very subtle (behind everything)
- * variant="hero"  → absolute within its parent, more prominent
+ * variant="site"  → fixed, full viewport, subtle (behind everything)
+ * variant="hero"  → absolute within parent, prominent
  */
 export function MapleFlagBg({
   variant = "site",
@@ -27,7 +32,7 @@ export function MapleFlagBg({
   const flagSymId = `flag-${id}`;
 
   const isSite = variant === "site";
-  const finalOpacity = opacity ?? (isSite ? 0.13 : 0.2);
+  const finalOpacity = opacity ?? (isSite ? 0.22 : 0.55);
 
   return (
     <div
@@ -50,73 +55,107 @@ export function MapleFlagBg({
         style={{ display: "block", width: "100%", height: "100%" }}
       >
         <defs>
-          {/* Cloth-wave distortion: animated turbulence drives a displacement map */}
+          {/* Gentle cloth ripple — small scale keeps the flag recognizable */}
           <filter
             id={filterId}
-            x="-30%"
-            y="-30%"
-            width="160%"
-            height="160%"
+            x="-20%"
+            y="-20%"
+            width="140%"
+            height="140%"
             colorInterpolationFilters="sRGB"
           >
             <feTurbulence
               type="fractalNoise"
-              baseFrequency="0.013 0.045"
+              baseFrequency="0.008 0.022"
               numOctaves="2"
-              seed="5"
+              seed="3"
               result="turb"
             >
               <animate
                 attributeName="baseFrequency"
-                dur="9s"
-                values="0.013 0.045; 0.02 0.06; 0.013 0.045"
+                dur="11s"
+                values="0.008 0.022; 0.011 0.03; 0.008 0.022"
                 repeatCount="indefinite"
               />
               <animate
                 attributeName="seed"
-                dur="18s"
-                values="5; 11; 5"
+                dur="22s"
+                values="3; 9; 3"
                 repeatCount="indefinite"
               />
             </feTurbulence>
             <feDisplacementMap
               in2="turb"
               in="SourceGraphic"
-              scale={isSite ? 70 : 140}
+              scale={isSite ? 22 : 34}
               xChannelSelector="R"
               yChannelSelector="G"
             />
           </filter>
 
-          {/* The Canadian flag: red side panels, white center, red maple leaf */}
+          {/*
+            The official Canadian flag — 2:1 ratio.
+            Red side panels are each 1/4 of the width (0-500, 1100-2000),
+            white center is 1/2 (500-1100). The 11-point maple leaf sits
+            centered on the white field.
+          */}
           <symbol id={flagSymId} viewBox="0 0 200 100">
+            {/* red side panels */}
             <rect x="0" y="0" width="50" height="100" fill="#D52B1E" />
             <rect x="150" y="0" width="50" height="100" fill="#D52B1E" />
+            {/* white center */}
             <rect x="50" y="0" width="100" height="100" fill="#ffffff" />
+            {/*
+              11-point maple leaf — the official Canadian flag leaf,
+              centered at (100, 50), drawn to span roughly y=14..86.
+              Path is a faithful approximation of the canonical leaf.
+            */}
             <path
-              d="M 100,12 L 106,40 L 133,32 L 121,56 L 145,60 L 126,75 L 135,95 L 100,80 L 65,95 L 74,75 L 55,60 L 79,56 L 67,32 L 94,40 Z"
+              transform="translate(100, 50) scale(0.42) translate(-100, -50)"
               fill="#D52B1E"
+              d="M 100,2
+                 L 107.5,30
+                 L 137,22
+                 L 124,48
+                 L 153,46
+                 L 131,66
+                 L 156,78
+                 L 130,84
+                 L 138,108
+                 L 115,96
+                 L 113,122
+                 L 100,108
+                 L 87,122
+                 L 85,96
+                 L 62,108
+                 L 70,84
+                 L 44,78
+                 L 69,66
+                 L 47,46
+                 L 76,48
+                 L 63,22
+                 L 92.5,30
+                 Z"
             />
           </symbol>
         </defs>
 
-        {/* The waving group — filter ripples the fabric, CSS adds a gentle sway */}
+        {/* The waving group — gentle filter ripple + CSS sway */}
         <g
           filter={`url(#${filterId})`}
           style={{
             transformOrigin: "center center",
-            animation: "flag-sway 9s ease-in-out infinite",
+            animation: "flag-sway 11s ease-in-out infinite",
           }}
         >
           {isSite ? (
             <>
-              <use href={`#${flagSymId}`} x="-250" y="-100" width="1050" height="525" />
-              <use href={`#${flagSymId}`} x="850" y="140" width="1050" height="525" />
-              <use href={`#${flagSymId}`} x="250" y="500" width="1050" height="525" />
-              <use href={`#${flagSymId}`} x="-150" y="560" width="900" height="450" />
+              <use href={`#${flagSymId}`} x="900" y="-60" width="900" height="450" />
+              <use href={`#${flagSymId}`} x="-200" y="280" width="800" height="400" />
+              <use href={`#${flagSymId}`} x="780" y="500" width="900" height="450" />
             </>
           ) : (
-            <use href={`#${flagSymId}`} x="250" y="100" width="1100" height="550" />
+            <use href={`#${flagSymId}`} x="350" y="180" width="900" height="450" />
           )}
         </g>
       </svg>

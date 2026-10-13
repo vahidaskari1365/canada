@@ -197,7 +197,7 @@
 
 /* Tone the site-wide flag down in dark mode so the white center stays subtle */
 .dark .maple-flag-site {
-  opacity: 0.09 !important;
+  opacity: 0.15 !important;
 }
 
 /* Smooth scroll */

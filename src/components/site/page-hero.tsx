@@ -28,8 +28,8 @@ export function PageHero({
       )}
     >
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 maple-pattern opacity-30" />
-        <MapleFlagBg variant="hero" opacity={0.14} />
+        <MapleFlagBg variant="hero" opacity={0.35} />
+        <div className="absolute inset-0 bg-gradient-to-br from-background/70 via-background/45 to-background/70" />
         <div className="absolute -top-24 ltr:right-10 rtl:left-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </div>

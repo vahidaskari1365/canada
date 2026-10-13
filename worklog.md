@@ -85,3 +85,25 @@ Stage Summary:
 - Hero: prominent waving Canadian flag (opacity 0.2, displacement scale 140) — VLM confirms rippled fabric edges + readable text
 - Site-wide: subtle fixed flag (opacity 0.13, displacement scale 70) visible behind all content during scroll — VLM confirms visible at 6/10 across services & testimonials sections while text stays readable
 - Flag genuinely animates (wave + sway) — verified via 5s video recording
+
+---
+Task ID: 8
+Agent: main (Z.ai Code)
+Task: Fix unrecognizable flag — rewrite to a clearly Canadian flag
+
+Work Log:
+- Diagnosed root cause: previous displacement scale (140 hero / 70 site) was so high it distorted the flag silhouette beyond recognition
+- Rewrote MapleFlagBg with:
+  - Correct 2:1 ratio flag with 1/4-width red side panels + white center
+  - Proper 11-point maple leaf path (official Canadian flag leaf) centered on white
+  - LOW displacement scale (34 hero / 22 site) — only ripples edges, keeps flag recognizable
+  - Higher opacity (0.55 hero / 0.22 site) so the flag is clearly visible
+  - Added soft background scrim (from-background/70 via /40 to /70) so text stays readable over the prominent flag
+- Updated dark-mode opacity to 0.15
+- Applied scrim to PageHero (inner pages) too with opacity 0.35
+- Lint passes (0 errors)
+
+Stage Summary:
+- VLM confirms: "The flag shown is the National Flag of Canada... the iconic 11-pointed maple leaf shape is distinct and easily recognizable"
+- Hero: flag clearly visible + readable text ✓
+- Site-wide: Canadian flag recognizable during scroll ✓

@@ -174,8 +174,9 @@ export function HomePage() {
       <section className="relative overflow-hidden">
         {/* backdrop with the waving Canadian flag */}
         <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-0 maple-pattern opacity-25" />
           <MapleFlagBg variant="hero" />
+          {/* soft scrim so text stays readable on top of the flag */}
+          <div className="absolute inset-0 bg-gradient-to-br from-background/70 via-background/40 to-background/70" />
           <div className="absolute -top-32 ltr:right-0 rtl:left-0 h-[480px] w-[480px] rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute top-40 ltr:left-0 rtl:right-0 h-[360px] w-[360px] rounded-full bg-amber-500/5 blur-3xl" />
           {/* fade the flag into the page background at the bottom for a smooth blend */}
